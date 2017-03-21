@@ -60,8 +60,8 @@ complex_subtract:
 
 	ret
 
-.global complex_multiplication
-complex_multiplication:				
+.global complex_multiply
+complex_multiply:				
 	addi 	sp, sp, -44				# (a + ib) * (c + id) = (ac - bd) + i(ad + bc)
 	stw		ra,	20(sp)				# (r4 * r6 - r5 * r7) + (r4 * r7 + r5 * r6)
 	stw		r7,	12(sp)				# d
@@ -109,8 +109,8 @@ complex_multiplication:
 	ret
 
 
-.global complex_division
-complex_division:
+.global complex_divide
+complex_divide:
 	addi 	sp, sp, -64				# (a + ib) / (c + id) = ((ac + bd) + i(bc - ad))/(c^2+d^2)
 	stw		ra,	20(sp)				# (r4 * r6 + r5 * r7) + (r5 * r6 - r4 * r7)/(r)
 	stw		r7,	12(sp)				# d
