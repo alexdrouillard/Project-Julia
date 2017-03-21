@@ -16,7 +16,7 @@ main:
 
 	call print_float
 
-	ldw r2, 0(sp)
+	ldw r4, 0(sp)
 	addi sp, sp, 4 
 
 	call print_float
