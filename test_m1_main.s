@@ -1,4 +1,4 @@
-.equ sp_init 0x70000000
+.equ sp_init, 0x70000000
 
 .global main
 main:
