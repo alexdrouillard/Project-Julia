@@ -7,13 +7,17 @@ main:
 	movia r6, 0x40a00000
 	movia r7, 0x40a00000
 
+	movia sp, sp_init
+	
 	call complex_add
 	mov r4, r2
-	mov r16, r3
+	addi sp, sp, -4
+	stw r3, 0(sp)
 
 	call print_float
 
-	mov r2, r16
+	ldw r3, 0(sp)
+	addi sp, sp, 4 
 
 	call print_float
 
