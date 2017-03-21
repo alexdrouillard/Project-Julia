@@ -8,8 +8,7 @@ main:
 	movia r7, 0x40a00000
 
 	call complex_add
-	mov r2, r4
-
+	mov r4, r2
 	mov r16, r3
 
 	call print_float
