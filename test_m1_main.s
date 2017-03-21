@@ -1,7 +1,7 @@
 .equ sp_init 0x70000000
 
-.global _start
-_start:
+.global main
+main:
 	movia r4, 0x5
 	movia r5, 0x6
 	movia r6, 0x4

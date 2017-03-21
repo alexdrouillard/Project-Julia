@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 float float_add(float a, float b){
 	return a + b;
 
@@ -28,7 +30,7 @@ int float_to_int(float a) {
 }
 
 void print_float(float a) {
-	printf("%lf ", a);
+	printf("%f ", a);
 
 }
 
