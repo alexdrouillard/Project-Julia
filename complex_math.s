@@ -1,3 +1,4 @@
+.global complex_add
 complex_add: 	
 	addi 	sp, sp, -24				# (a + bi) + (c + di)
 	stw		ra,	20(sp)				#  (r4 + r5i) + (r6 + r7i)
@@ -28,6 +29,7 @@ complex_add:
 
 	ret
 
+.global complex_subtract
 complex_subtract: 	
 	addi 	sp, sp, -24				# (a + bi) - (c + di)
 	stw		ra,	20(sp)				# (r4 + r5i) - (r6 + r7i)
@@ -58,6 +60,7 @@ complex_subtract:
 
 	ret
 
+.global complex_multiplication
 complex_multiplication:				
 	addi 	sp, sp, -44				# (a + ib) * (c + id) = (ac - bd) + i(ad + bc)
 	stw		ra,	20(sp)				# (r4 * r6 - r5 * r7) + (r4 * r7 + r5 * r6)
@@ -106,6 +109,7 @@ complex_multiplication:
 	ret
 
 
+.global complex_division
 complex_division:
 	addi 	sp, sp, -64				# (a + ib) / (c + id) = ((ac + bd) + i(bc - ad))/(c^2+d^2)
 	stw		ra,	20(sp)				# (r4 * r6 + r5 * r7) + (r5 * r6 - r4 * r7)/(r)
