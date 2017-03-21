@@ -2,10 +2,10 @@
 
 .global main
 main:
-	movia r4, 0x5
-	movia r5, 0x6
-	movia r6, 0x4
-	movia r7, 0x1
+	movia r4, 0x40a00000 	
+	movia r5, 0x40a00000
+	movia r6, 0x40a00000
+	movia r7, 0x40a00000
 
 	call complex_add
 	mov r2, r4
