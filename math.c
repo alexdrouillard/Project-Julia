@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <math.h>
 
 float float_add(float a, float b){
 	return a + b;
@@ -37,4 +38,8 @@ void print_float(float a) {
 void print_linebreak() {
 	printf("/n");
 
+}
+
+void print_complex(float a, float b) {
+    printf("%f + %fi", a, b);
 }
