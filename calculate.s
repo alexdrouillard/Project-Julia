@@ -21,6 +21,8 @@ iterate:
 		call complex_magnitude
 		bgt r2, threshold, iterate_loop_done
 		call equation
+		mov  r4, r2
+		mov  r5, r3
 		br iterate_loop
 	iterate_loop_done:
 
@@ -42,8 +44,6 @@ equation:
 	mov  r6, r4
 	mov  r7, r5
 	call complex_multiply
-	mov  r4, r2
-	mov  r5, r3
 
 	ldw  r5, 8(sp)
 	ldw  r4, 4(sp)
