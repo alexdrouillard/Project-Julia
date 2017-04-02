@@ -1,8 +1,8 @@
-.equ sp_init, 0x70000000
+.equ sp_init, 0x017FFF80
 
 .global main
 main:
-	movia sp, 0x70000000
+	movia sp, sp_init
 	movi r4, 0
 	movi r5, 0
 
