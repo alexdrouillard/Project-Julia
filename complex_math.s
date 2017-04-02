@@ -1,5 +1,16 @@
 .global complex_add
-complex_add: 	
+complex_add:
+        addi    sp, sp, -32
+        stw             r8,     0(sp)
+        stw             r9,     4(sp)
+        stw             r10,    8(sp)
+        stw             r11,    12(sp)
+        stw             r12,    16(sp)
+        stw             r13,    20(sp)
+        stw             r14,    24(sp)
+        stw             r15,    28(sp)
+
+ 	
 	addi 	sp, sp, -24				# (a + bi) + (c + di)
 	stw		ra,	20(sp)				#  (r4 + r5i) + (r6 + r7i)
 	stw		r7,	12(sp)				# d
@@ -27,10 +38,32 @@ complex_add:
 
 	addi	sp, sp, 24				# increment sp
 
+
+        ldw             r8,     0(sp)
+        ldw             r9,     4(sp)
+        ldw             r10,    8(sp)
+        ldw             r11,    12(sp)
+        ldw             r12,    16(sp)
+        ldw             r13,    20(sp)
+        ldw             r14,    24(sp)
+        ldw             r15,    28(sp)
+
+        addi    sp, sp, 32
+
 	ret
 
 .global complex_subtract
-complex_subtract: 	
+complex_subtract: 
+	addi    sp, sp, -32
+        stw             r8,     0(sp)
+        stw             r9,     4(sp)
+        stw             r10,    8(sp)
+        stw             r11,    12(sp)
+        stw             r12,    16(sp)
+        stw             r13,    20(sp)
+        stw             r14,    24(sp)
+        stw             r15,    28(sp)
+
 	addi 	sp, sp, -24				# (a + bi) - (c + di)
 	stw		ra,	20(sp)				# (r4 + r5i) - (r6 + r7i)
 	stw		r7,	12(sp)				# d
@@ -58,11 +91,31 @@ complex_subtract:
 
 	addi	sp, sp, 24				# increment sp
 
+        ldw             r8,     0(sp)
+        ldw             r9,     4(sp)
+        ldw             r10,    8(sp)
+        ldw             r11,    12(sp)
+        ldw             r12,    16(sp)
+        ldw             r13,    20(sp)
+        ldw             r14,    24(sp)
+        ldw             r15,    28(sp)
+
+        addi    sp, sp, 32
 	ret
 
 .global complex_multiply
-complex_multiply:				
-	addi 	sp, sp, -44				# (a + ib) * (c + id) = (ac - bd) + i(ad + bc)
+complex_multiply:
+        addi    sp, sp, -32
+        stw             r8,     0(sp)
+        stw             r9,     4(sp)
+        stw             r10,    8(sp)
+        stw             r11,    12(sp)
+        stw             r12,    16(sp)
+        stw             r13,    20(sp)
+        stw             r14,    24(sp)
+        stw             r15,    28(sp)
+	
+        addi 	sp, sp, -44				# (a + ib) * (c + id) = (ac - bd) + i(ad + bc)
 	stw		ra,	20(sp)				# (r4 * r6 - r5 * r7) + (r4 * r7 + r5 * r6)
 	stw		r7,	12(sp)				# d
 	stw		r6,	8(sp)				# c
@@ -106,12 +159,32 @@ complex_multiply:
 	ldw 	r4, 0(sp)
 	addi 	sp, sp, 44
 
+        ldw             r8,     0(sp)
+        ldw             r9,     4(sp)
+        ldw             r10,    8(sp)
+        ldw             r11,    12(sp)
+        ldw             r12,    16(sp)
+        ldw             r13,    20(sp)
+        ldw             r14,    24(sp)
+        ldw             r15,    28(sp)
+
+        addi    sp, sp, 32
 	ret
 
 
 .global complex_divide
 complex_divide:
-	addi 	sp, sp, -64				# (a + ib) / (c + id) = ((ac + bd) + i(bc - ad))/(c^2+d^2)
+	addi    sp, sp, -32
+        stw             r8,     0(sp)
+        stw             r9,     4(sp)
+        stw             r10,    8(sp)
+        stw             r11,    12(sp)
+        stw             r12,    16(sp)
+        stw             r13,    20(sp)
+        stw             r14,    24(sp)
+        stw             r15,    28(sp)
+
+        addi 	sp, sp, -64				# (a + ib) / (c + id) = ((ac + bd) + i(bc - ad))/(c^2+d^2)
 	stw		ra,	20(sp)				# (r4 * r6 + r5 * r7) + (r5 * r6 - r4 * r7)/(r)
 	stw		r7,	12(sp)				# d
 	stw		r6,	8(sp)				# c
@@ -181,9 +254,67 @@ complex_divide:
 	ldw 	r4, 0(sp)
 	addi 	sp, sp, 64
 
+        ldw             r8,     0(sp)
+        ldw             r9,     4(sp)
+        ldw             r10,    8(sp)
+        ldw             r11,    12(sp)
+        ldw             r12,    16(sp)
+        ldw             r13,    20(sp)
+        ldw             r14,    24(sp)
+        ldw             r15,    28(sp)
+
+        addi    sp, sp, 32
 	ret
 
+.global complex_magnitude
+complex_magnitude:
+        addi    sp, sp, -32
+        stw             r8,     0(sp)
+        stw             r9,     4(sp)
+        stw             r10,    8(sp)
+        stw             r11,    12(sp)
+        stw             r12,    16(sp)
+        stw             r13,    20(sp)
+        stw             r14,    24(sp)
+        stw             r15,    28(sp)
+       
+        addi 	sp, sp, -64				        #
+	stw		ra,	20(sp)				#
+	stw		r7,	12(sp)				#
+	stw		r6,	8(sp)				#
+	stw		r5,	4(sp)				# 
+	stw		r4,	0(sp)				#
+        
+        ldw r4, 0(sp)
+        ldw r5, 0(sp)                                           # do a * a
+        call float_multiply
+        stw r2, 24(sp)
 
+        ldw r4, 4(sp)
+        ldw r5, 4(sp)
+        call float_multiply                                     # do b * b
+        stw r2, 28(sp)
 
+        ldw r4, 24(sp)                                          #do a^2 + b^2
+        ldw r5, 28(sp)
+        call float_add
 
+	ldw		ra,	20(sp)				#
+	ldw		r7,	12(sp)				#
+	ldw		r6,	8(sp)				#
+	ldw		r5,	4(sp)				# 
+	ldw		r4,	0(sp)				#
+    
+        addi 	sp, sp, 64				        #
+        
+        ldw             r8,     0(sp)
+        ldw             r9,     4(sp)
+        ldw             r10,    8(sp)
+        ldw             r11,    12(sp)
+        ldw             r12,    16(sp)
+        ldw             r13,    20(sp)
+        ldw             r14,    24(sp)
+        ldw             r15,    28(sp)
 
+        addi    sp, sp, 32
+        ret 
