@@ -4,6 +4,8 @@
 .equ maxiter, 128
 .equ threshold, 4
 
+.global iterate
+
 iterate:
 	addi sp, sp, -32
 	stw  r16, 0(sp)
