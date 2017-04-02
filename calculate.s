@@ -22,7 +22,7 @@ iterate:
 	iterate_loop:		#for i in range maxiter
 		beq r6, r16, iterate_loop_done  #break if i == maxiter
 		call complex_magnitude		
-		bgt r2, threshold, iterate_loop_done #break if complex_magnitude(cn) >  
+		bgt r2, r7, iterate_loop_done #break if complex_magnitude(cn) >  
 		call equation
 		mov  r4, r2
 		mov  r5, r3
