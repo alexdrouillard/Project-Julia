@@ -15,7 +15,7 @@ main:
 	movia r4, 0x40000000
 
 	call iterate
-	mov r4, r1
+	mov r4, r2
 	mov r5, r3
 	call print_complex
 looper:
