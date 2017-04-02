@@ -2,7 +2,7 @@
 
 .global main
 main:
-	movia sp, sp_init
+	movia sp, 0x70000000
 	movi r4, 0
 	movi r5, 0
 
