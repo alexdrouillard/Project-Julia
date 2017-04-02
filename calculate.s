@@ -15,14 +15,14 @@ iterate:
 	stw  r5,  16(sp)	
 	stw  ra,  20(sp)
 
-	movi r6, maxiter     #iterations before it gives up
-	movi r7, threshold   #square of complex number cannot be larger than this
+	movi r17, maxiter     #iterations before it gives up
+	movi r18, threshold   #square of complex number cannot be larger than this
 	movi r16, 0          #iterator value i 
 
 	iterate_loop:		#for i in range maxiter
-		beq r6, r16, iterate_loop_done  #break if i == maxiter
+		beq r17, r16, iterate_loop_done  #break if i == maxiter
 		call complex_magnitude		
-		bgt r2, r7, iterate_loop_done #break if complex_magnitude(cn) >  
+		bgt r2, r18, iterate_loop_done #break if complex_magnitude(cn) >  
 		call equation
 		mov  r4, r2
 		mov  r5, r3
