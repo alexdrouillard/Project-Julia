@@ -26,6 +26,7 @@ iterate:
 		call equation
 		mov  r4, r2
 		mov  r5, r3
+		addi r16, r16, 1
 		br iterate_loop
 	iterate_loop_done:
 
