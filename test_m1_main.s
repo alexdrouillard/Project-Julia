@@ -18,5 +18,12 @@ main:
 	mov r4, r2
 	mov r5, r3
 	call print_complex
+
+        #want to write blue to a bunch of pixels
+        movui r4, 10
+        movui r5, 100
+        movui r6, 0x000F
+
+        call draw_pixel  
 looper:
 	br looper

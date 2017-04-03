@@ -36,10 +36,14 @@ void print_float(float a) {
 }
 
 void print_linebreak() {
-	printf("/n");
+	printf("\n");
 
 }
 
 void print_complex(float a, float b) {
-    printf("%f + %fi", a, b);
+    printf("%f + %fi\n", a, b);
+}
+
+void print_int(int a) {
+    printf("%d\n", a);
 }
