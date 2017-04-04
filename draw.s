@@ -97,15 +97,15 @@ draw_set:
     mov r9, r0 #draw at y
 
     srli r10, r8, 1 #divide r8 by 2
-    muli r10, -1
+    muli r10, r10, -1
 
     srli r11, r9, 1 #indicies into julia set
-    muli r11, -1    
+    muli r11, r11, -1    
  
     movia r12, X_COORD_MAX #i
     movia r13, Y_COORD_MAX #j
-    srli r12, 1
-    srli r13, 1
+    srli r12, r12, 1
+    srli r13, r13, 1
     # r12 is x for julia set
     # r13 is y for julia set
 
@@ -113,7 +113,7 @@ draw_set:
     beq r8, r12, done_X
     mov r9, r0
         calculate_Y:
-        beq r9, r13
+        beq r9, r13, done_Y
         # for each indicies, add offset and call julia set
         # convert to floating point and call julia set
         addi sp, sp, -28
@@ -133,7 +133,7 @@ draw_set:
         
         mov r5, r2
         ldw r4, 24(sp)
-        call calculate
+        call iterate
 
         #here we have our number of iterations in r2 
         mov r4, r2

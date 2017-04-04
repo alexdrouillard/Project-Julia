@@ -1,9 +1,9 @@
 #unisigned int iterate(complex_num r4-r5)
 #complex_num equation(complex_num r4-r5)
 
-.equ maxiter, 128
+.equ maxiter, 256
 .equ threshold, 4
-
+.global iterate
 iterate:
 	addi sp, sp, -32
 	stw  r16, 0(sp)
@@ -11,21 +11,23 @@ iterate:
 	stw  r18, 8(sp)
 	stw  r4,  12(sp)
 	stw  r5,  16(sp)
+        stw  ra,  20(sp)
 
-	movi r6, maxiter
-	movi r7, threshold
+	movi r17, maxiter
+	movi r18, threshold
 	movi r16, 0
 
 	iterate_loop:
-		beq r6, r16, iterate_loop_done
+		beq r17, r16, iterate_loop_done
 		call complex_magnitude
-		bgt r2, threshold, iterate_loop_done
+		bgt r2, r18, iterate_loop_done
 		call equation
 		mov  r4, r2
 		mov  r5, r3
+                addi r16, r16, 1
 		br iterate_loop
 	iterate_loop_done:
-
+        ldw  ra,  20(sp)
 	ldw  r5,  16(sp)
 	ldw  r4,  12(sp)
 	ldw  r18, 8(sp)
