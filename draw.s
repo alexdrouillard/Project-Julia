@@ -1,33 +1,26 @@
 .equ VGA_ADDR, 0x08000000
 .equ X_COORD_MAX, 320
 .equ Y_COORD_MAX, 240
+
+
+.equ left, 0x40000000 #-2.0
+.equ right, 0xC0000000 #2.0
+.equ top, 0x3f800000 #1.0 GPA sad bois
+.equ bot, 0xbf800000 #-1.0 
+.equ width, 0x43A00000 #320.0 in hex
+.equ height, 0x43700000 #240.0 in hex
+
 .global draw_pixel
 # r4 = x
 # r5 = y
 # r6 = color
 draw_pixel: 
-    addi sp, sp, -84
+    addi sp, sp, -20
     stw r4, 0(sp) 
     stw r5, 4(sp) 
-    stw r6, 8(sp) 
-    stw r7, 12(sp) 
-    stw r8, 16(sp) 
-    stw r9, 20(sp) 
-    stw r10, 24(sp) 
-    stw r11, 28(sp) 
-    stw r12, 32(sp) 
-    stw r13, 36(sp) 
-    stw r14, 40(sp) 
-    stw r15, 44(sp) 
-    stw r16, 48(sp) 
-    stw r17, 52(sp) 
-    stw r18, 56(sp) 
-    stw r19, 60(sp) 
-    stw r20, 64(sp) 
-    stw r21, 68(sp) 
-    stw r22, 72(sp) 
-    stw r23, 76(sp) 
-    stw ra, 80(sp) 
+    stw r6, 8(sp)  
+    stw r8, 12(sp)
+    stw ra, 16(sp) 
     
     #use r8 for the pixel address 
     mov r8, r0
@@ -38,31 +31,13 @@ draw_pixel:
     or r8, r8, r4
     sthio r6, 0(r8)
     
-     
-
     ldw r4, 0(sp) 
     ldw r5, 4(sp) 
-    ldw r6, 8(sp) 
-    ldw r7, 12(sp) 
-    ldw r8, 16(sp) 
-    ldw r9, 20(sp) 
-    ldw r10, 24(sp) 
-    ldw r11, 28(sp) 
-    ldw r12, 32(sp) 
-    ldw r13, 36(sp) 
-    ldw r14, 40(sp) 
-    ldw r15, 44(sp) 
-    ldw r16, 48(sp) 
-    ldw r17, 52(sp) 
-    ldw r18, 56(sp) 
-    ldw r19, 60(sp) 
-    ldw r20, 64(sp) 
-    ldw r21, 68(sp) 
-    ldw r22, 72(sp) 
-    ldw r23, 76(sp) 
-    ldw ra, 80(sp) 
-  
-    addi sp, sp, 84
+    ldw r6, 8(sp)  
+    ldw r8, 12(sp)
+    ldw ra, 16(sp) 
+    
+    addi sp, sp, 20
  
     ret 
 
@@ -91,76 +66,111 @@ draw_set:
     stw r23, 76(sp) 
     stw ra, 80(sp) 
 
-    # need to call calculate for every pixel on the screen,
-    # then we need to convert the color from hsv to rgb, then draw it on the screen
-    mov r8, r0 #draw at x
-    mov r9, r0 #draw at y
+    # screen coordinates start at 0,0
+    calculate_x_constant:
+        movia r16, left
+        movia r17, right
 
-    srli r10, r8, 1 #divide r8 by 2
-    muli r10, r10, -1
+        mov r5, r16
+        mov r4, r17
 
-    srli r11, r9, 1 #indicies into julia set
-    muli r11, r11, -1    
- 
-    movia r12, X_COORD_MAX #i
-    movia r13, Y_COORD_MAX #j
-    srli r12, r12, 1
-    srli r13, r13, 1
-    # r12 is x for julia set
-    # r13 is y for julia set
+        call float_subtract
 
-    calculate_X:
-    beq r8, r12, done_X
-    mov r9, r0
-        calculate_Y:
-        beq r9, r13, done_Y
-        # for each indicies, add offset and call julia set
-        # convert to floating point and call julia set
-        addi sp, sp, -28
-        stw r8, 0(sp)
-        stw r9, 4(sp)
-        stw r10, 8(sp)
-        stw r11, 12(sp)
-        stw r12, 16(sp)
-        stw r13, 20(sp)
+        mov r4, r2
+        movia r5, width
+
+        call float_divide
+
+        mov r20, r2 # r20 holds (right - left)/width
+
+    calculate_y_constant:
+        movia r16, top
+        movia r17, bot
+
+        mov r5, r16
+        mov r4, r17
+
+        call float_subtract
+
+        mov r4, r2
+        movia r5, height
+
+        call float_divide
+
+        mov r21, r2 # r21 holds (bot - top)/height
+
+    mov r16, r0 #screen_x
+    mov r17, r0 #screen_y
+
+    movia r18, X_COORD_MAX
+    movia r19, Y_COORD_MAX
+
+    draw_x:
+    beq r16, r18, draw_x_done
+    mov r17, r0
+        draw_y:
+        beq r17, r19, draw_y_done
         
-        mov r4, r10
-        call int_to_float
-        stw r2, 24(sp) 
+        # xconstant = r20
+        # yconstant = r21
+        # x = r16
+        # y = r17 
 
-        mov r4, r11
+        # convert int x into float
+        mov r4, r16
         call int_to_float
-        
-        mov r5, r2
-        ldw r4, 24(sp)
+        mov r22, r2
+
+        # do x * xconstant
+        mov r4, r22
+        mov r5, r20
+        call float_multiply
+        mov r22, r2
+
+        # convert int y into float
+        mov r4, r17
+        call int_to_float
+        mov r23, r2
+
+        # do y * yconstant
+        mov r4, r23
+        mov r5, r21
+        call float_multiply
+        mov r23, r2
+
+        # do left + x*xconstant
+        movia r4, left
+        mov r5, r22
+        call float_add
+        mov r22, r2
+
+        # do top + y*yconstant
+        movia r4, top
+        mov r5, r23
+        call float_add
+        mov r23, r2
+
+        #now get the julia set value for x and y
+        mov r4, r22
+        mov r5, r23
         call iterate
-
-        #here we have our number of iterations in r2 
+        # r2 holds julia number
         mov r4, r2
         call hsv_to_rgb
+        # r2 holds rgb value
+        mov r4, r16 # x
+        mov r5, r17 # y
+        mov r6, r2 # color
 
-        mov r6, r2
-        ldw r4, 0(sp)
-        ldw r5, 4(sp)      
-        call draw_pixel
+        call draw_pixel             
         
-        ldw r8, 0(sp)
-        ldw r9, 4(sp)
-        ldw r10, 8(sp) 
-        ldw r11, 12(sp)
-        ldw r12, 16(sp)
-        ldw r13, 20(sp)
-        addi sp, sp, 28
-
-        #done this iteration, add to y
-        addi r9, r9, 1
-        addi r11, r11, 1 
-        br calculate_Y 
-    done_Y:
-    br calculate_X         
-    addi r8, r8, 1
-    addi r10, r10, 1 
-    done_X:
+        addi r17, r17, 1
+        br draw_y
+    draw_y_done:
+    addi r16, r16, 1
+    br draw_x
+    draw_x_done:
+     
 
     ldw r4, 0(sp) 
     ldw r5, 4(sp) 

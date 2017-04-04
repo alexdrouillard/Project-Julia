@@ -2,7 +2,7 @@
 #complex_num equation(complex_num r4-r5)
 
 .equ maxiter, 256
-.equ threshold, 4
+.equ threshold, 0x41200000
 .global iterate
 iterate:
 	addi sp, sp, -32
@@ -11,11 +11,11 @@ iterate:
 	stw  r18, 8(sp)
 	stw  r4,  12(sp)
 	stw  r5,  16(sp)
-        stw  ra,  20(sp)
+    stw  ra,  20(sp)
 
-	movi r17, maxiter
-	movi r18, threshold
-	movi r16, 0
+	movia r17, maxiter
+	movia r18, threshold
+	movia r16, 0
 
 	iterate_loop:
 		beq r17, r16, iterate_loop_done
@@ -24,10 +24,13 @@ iterate:
 		call equation
 		mov  r4, r2
 		mov  r5, r3
-                addi r16, r16, 1
+        addi r16, r16, 1
 		br iterate_loop
 	iterate_loop_done:
-        ldw  ra,  20(sp)
+
+	mov r2, r16
+    
+    ldw  ra,  20(sp)
 	ldw  r5,  16(sp)
 	ldw  r4,  12(sp)
 	ldw  r18, 8(sp)
@@ -46,6 +49,14 @@ equation:
 	mov  r6, r4
 	mov  r7, r5
 	call complex_multiply
+
+	movia r4, 0xbf4ccccd
+	movia r5, 0x3e1fbe77
+
+	mov r6, r2
+	mov r7, r3
+
+	call complex_add
 
 	ldw  r5, 8(sp)
 	ldw  r4, 4(sp)
