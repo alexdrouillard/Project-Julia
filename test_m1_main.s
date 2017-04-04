@@ -26,10 +26,17 @@ main:
 	call print_int
 
     #want to write blue to a bunch of pixels
-    movui r4, 10
-    movui r5, 100
-    movui r6, 0x000F
-
-    call draw_pixel  
+   	mov r7, r0
+	movi r7, 320
+	draw_rainbow: 
+		mov r4, r7
+		call hsv_to_rgb
+		mov   r6, r2 
+		movui r4, 100
+   		movui r5, 100
+		addi r7, r7, 1
+ 	   	call draw_pixel
+		addi r4, r4, 1
+		bne r4, r7, draw_rainbow  
 looper:
 	br looper
