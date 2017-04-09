@@ -3,12 +3,16 @@
 .equ Y_COORD_MAX, 240
 
 
-.equ left, 0x40000000 #-2.0
-.equ right, 0xC0000000 #2.0
-.equ top, 0x3f800000 #1.0 GPA sad bois
-.equ bot, 0xbf800000 #-1.0 
+.equ right, 0x40000000 #2.0
+.equ left, 0xC0000000 #-2.0
+.equ bot, 0x3f800000 #-1.0 GPA sad bois
+.equ top, 0xbf800000 #1.0 
 .equ width, 0x43A00000 #320.0 in hex
 .equ height, 0x43700000 #240.0 in hex
+
+.equ float_one, 0x3f800000
+.equ float_320, 0x43a00000
+.equ float_240, 0x43700000
 
 .global draw_pixel
 # r4 = x
@@ -70,18 +74,13 @@ draw_set:
     calculate_x_constant:
         movia r16, left
         movia r17, right
+ 
+        #right - left
+        custom 254, r2, r17, r16
 
-        mov r5, r16
-        mov r4, r17
-
-        call float_subtract
-
-        mov r4, r2
         movia r5, width
 
-        call float_divide
-
-        mov r20, r2 # r20 holds (right - left)/width
+        custom 255, r20, r2, r5 # r20 holds (right - left)/width
 
     calculate_y_constant:
         movia r16, top
@@ -89,18 +88,19 @@ draw_set:
 
         mov r5, r16
         mov r4, r17
-
-        call float_subtract
-
-        mov r4, r2
+        
+        # bot - top
+        custom 254, r2, r17, r16
         movia r5, height
 
-        call float_divide
-
-        mov r21, r2 # r21 holds (bot - top)/height
+        custom 255, r21, r2, r5 # r21 holds (bot - top)/height
 
     mov r16, r0 #screen_x
     mov r17, r0 #screen_y
+
+    mov r8, r0 #screen_x_float
+    mov r9, r0 #screen_y_float
+    movia r10, float_one  
 
     movia r18, X_COORD_MAX
     movia r19, Y_COORD_MAX
@@ -108,6 +108,13 @@ draw_set:
     draw_x:
     beq r16, r18, draw_x_done
     mov r17, r0
+    # do x * xconstant
+    custom 252, r22, r8, r20 
+    # do left + x*xconstant
+    movia r4, left
+    custom 253, r22, r4, r22
+    mov r9, r0
+
         draw_y:
         beq r17, r19, draw_y_done
         
@@ -116,39 +123,13 @@ draw_set:
         # x = r16
         # y = r17 
 
-        # convert int x into float
-        mov r4, r16
-        call int_to_float
-        mov r22, r2
-
-        # do x * xconstant
-        mov r4, r22
-        mov r5, r20
-        call float_multiply
-        mov r22, r2
-
-        # convert int y into float
-        mov r4, r17
-        call int_to_float
-        mov r23, r2
-
         # do y * yconstant
-        mov r4, r23
-        mov r5, r21
-        call float_multiply
-        mov r23, r2
 
-        # do left + x*xconstant
-        movia r4, left
-        mov r5, r22
-        call float_add
-        mov r22, r2
+        custom 252, r23, r9, r21
 
         # do top + y*yconstant
         movia r4, top
-        mov r5, r23
-        call float_add
-        mov r23, r2
+        custom 253, r23, r4, r23
 
         #now get the julia set value for x and y
         mov r4, r22
@@ -165,9 +146,11 @@ draw_set:
         call draw_pixel             
         
         addi r17, r17, 1
+        custom 253, r9, r9, r10
         br draw_y
     draw_y_done:
     addi r16, r16, 1
+    custom 253, r8, r8, r10
     br draw_x
     draw_x_done:
      

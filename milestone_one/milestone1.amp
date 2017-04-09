@@ -13,10 +13,13 @@
             <source_file filepath="true">../complex_math.s</source_file>
             <source_file filepath="true">../math.c</source_file>
             <source_file filepath="true">../test_m1_main.s</source_file>
+            <source_file filepath="true">../calculate.s</source_file>
+            <source_file filepath="true">../draw.s</source_file>
+            <source_file filepath="true">../hsb_to_rgb.s</source_file>
         </source_files>
         <options>
-            <compiler_flags>-g -O1 -ffunction-sections -fverbose-asm -fno-inline -mno-cache-volatile</compiler_flags>
-            <emulate_unimpl_instructions>true</emulate_unimpl_instructions>
+            <compiler_flags>-g -O1 -ffunction-sections -fverbose-asm -fno-inline -mno-cache-volatile -mcustom-fpu-cfg=60-2</compiler_flags>
+            <emulate_unimpl_instructions>false</emulate_unimpl_instructions>
             <use_small_c_library>false</use_small_c_library>
         </options>
         <linker_sections>
