@@ -51,7 +51,7 @@ draw_box:
 	draw_right_box:
 		call draw_and_save_pixel
 		addi r5, r5, 1
-		addi, r6, r6, 2
+		addi r6, r6, 2
 		addi r7, r7, -1
 		bne r7, r0, draw_right_box
 
@@ -133,7 +133,7 @@ draw_set:
     stw r6, 8(sp) 
     stw r7, 12(sp) 
     stw r8, 16(sp) 
-    stw ir9, 20(sp) 
+    stw r9, 20(sp) 
     stw r10, 24(sp) 
     stw r11, 28(sp) 
     stw r12, 32(sp) 
