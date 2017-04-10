@@ -35,40 +35,24 @@ draw_box:
 	#r4 = top_left of box x pixel
 	#r5 = top_left of box y pixel
 	addi sp, sp, -40
-	movia r6, top_box
-	movia r7, 160
+	stw r8, 0(sp)
+	stw r9, 4(sp)
+	stw r10, 8(sp)
+	stw r11, 12(sp)
+	mov r8, r4
+	mov r9, r5
+	movia r10, top_box
+	movia r11, 160
 	draw_top_box:
-		addi sp, sp, -8
-		stw  r4, 0(sp)
-		stw  r5, 4(sp)
 		call draw_and_save_pixel
-		ldw  r4, 0(sp)
-		stw  r5, 4(sp)
 		addi sp, sp, 8
-		addi r4, r4, 1
-		addi r6, r6, 2
-		addi r7, r7, -1
-		bne r7, r0, draw_top_box
-
-	movia r6, right_box
-	movia r7, 118
-	addi r5, r5, 1
-	draw_right_box:
-		addi sp, sp, -8
-		stw r4, 0(sp)
-		stw r5, 4(sp)
-		call draw_and_save_pixel
-		ldw r4, 0(sp)
-		ldw r5, 4(sp)
-		addi sp, sp, 8
-		addi r5, r5, 1
-		addi r6, r6, 2
-		addi r7, r7, -1
-		bne r7, r0, draw_right_box
-
-	movia r6, bot_box
-	movia r7, 160
-			
+		addi r8, r8, 1
+		addi r10, r10, 2
+		addi r11, r11, -1
+		mov r4, r8
+		mov r5, r9
+		mov r6, r10
+		bne r11, r0, draw_top_box	
 	ret
 		
 		
