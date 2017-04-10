@@ -22,14 +22,10 @@ complex_multiply:
     
     # multiplication
     custom 252, r3, r4, r7 # do (a*d)
-    addi sp, sp, -4
-    stw r2, 0(sp)
-    custom 252, r2, r5, r6 # do (b*c)
+    custom 252, r7, r5, r6 # do (b*c)
     
     # addition
-    custom 253, r3, r3, r2 # do (a*d + b*c)
-    ldw r2, 0(sp)
-    addi sp, sp, 4
+    custom 253, r3, r3, r7 # do (a*d + b*c)
     ret
 
 .global complex_magnitude
