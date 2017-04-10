@@ -1,3 +1,12 @@
+.data
+.align 2
+box_x: .word 80
+box_y: .word 60
+left_box: .store 118
+right_box: .store 118
+top_box: .store 160
+bot_box: .store 160
+
 .equ VGA_ADDR, 0x08000000
 .equ X_COORD_MAX, 320
 .equ Y_COORD_MAX, 240
@@ -18,6 +27,82 @@
 # r4 = x
 # r5 = y
 # r6 = color
+
+draw_box:
+	#r4 = top_left of box x pixel
+	#r5 = top_left of box y pixel
+		
+
+draw_and_save_pixel:
+	#r4 = xpixel
+	#r5 = ypixel
+	#r6 = memory address
+	addi sp, sp, -4
+	stw ra, 0(sp)
+	
+	call save_pixel
+	movia r6, 0xFFFF # draw white into pixel
+	call save_pixel
+	stw ra, 0(sp)
+
+	addi sp, sp, 4
+	ret
+
+save_pixel:
+	#r4 = xpixel
+	#r5 = ypixel
+        #r6 = memory_address
+        #no retrurn value
+	
+    addi sp, sp, -20
+    stw r4, 0(sp) 
+    stw r5, 4(sp) 
+    stw r6, 8(sp)  
+    stw r8, 12(sp)
+    stw ra, 16(sp) 
+    
+    #use r8 for the pixel address 
+    mov r8, r0
+    movia r8, VGA_ADDR
+    slli r5, r5, 10
+    or r8, r8, r5
+    slli r4, r4, 1
+    or r8, r8, r4
+    ldhio r5, 0(r8)
+    sth r5, 0(r6)    
+
+    ldw r4, 0(sp) 
+    ldw r5, 4(sp) 
+    ldw r6, 8(sp)  
+    ldw r8, 12(sp)
+    ldw ra, 16(sp) 
+    
+    addi sp, sp, 20
+ 
+    ret 
+	
+save_lines:
+	#r4 = top_left x pixel
+	#r5 = top_left y pixel
+	addi sp, sp, -4
+	stw ra, 0(sp)
+	movia r7, 160
+	movia r6, top_box
+	save_top:
+		call save_pixel
+		subi r7, r7, 1
+		addi r6, r6, 2
+		bne r7, r0, save_top 
+	
+	call save_line
+	call save_line
+	ldw ra, 0(sp)
+	addi sp, sp, 4
+	ret
+
+	
+
+
 draw_pixel: 
     addi sp, sp, -20
     stw r4, 0(sp) 
