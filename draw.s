@@ -14,10 +14,11 @@ bot_box: .skip 160
 .equ BOX_HEIGHT_FLOAT, 0x42f00000
 
 .data
+.align 2
     right: .word 0x40000000 #2.0
     left: .word 0xC0000000 #-2.0
-    bot: .word 0xbfc00000 #-1.5 GPA sad bois
-    top: .word 0x3fc00000 #1.5 
+    bot: .word 0xbf800000 #-1.0 GPA sad bois
+    top: .word 0x3f800000 #1.0
     width: .word 0x43A00000 #320.0 in hex
     height: .word 0x43700000 #240.0 in hex
 
@@ -86,35 +87,21 @@ save_pixel:
 
 
 draw_pixel: 
-    addi sp, sp, -20
-    stw r4, 0(sp) 
-    stw r5, 4(sp) 
-    stw r6, 8(sp)  
-    stw r8, 12(sp)
-    stw ra, 16(sp) 
     
     #use r8 for the pixel address 
-    mov r8, r0
-    movia r8, VGA_ADDR
+    mov r7, r0
+    movia r7, VGA_ADDR
     slli r5, r5, 10
-    or r8, r8, r5
+    or r7, r7, r5
     slli r4, r4, 1
-    or r8, r8, r4
-    sthio r6, 0(r8)
-    
-    ldw r4, 0(sp) 
-    ldw r5, 4(sp) 
-    ldw r6, 8(sp)  
-    ldw r8, 12(sp)
-    ldw ra, 16(sp) 
-    
-    addi sp, sp, 20
- 
+    or r7, r7, r4
+    sthio r6, 0(r7)
+     
     ret 
 
 .global draw_set
 draw_set: 
-    addi sp, sp, -88
+    addi sp, sp, -104
     stw r4, 0(sp) 
     stw r5, 4(sp) 
     stw r6, 8(sp) 
@@ -189,6 +176,7 @@ calculate_constants:
     # first, compute where in cartesian where the given pixel is
     # to calculate left and right, need to find cartesian of new left and right
     # find new left
+    # TODO: fix dis back to bne
     bne r10, r0, skip_new_constants
     compute_new_constants:
 
@@ -200,9 +188,9 @@ calculate_constants:
             ldw r15, 0(r15)
             # do left + input_pixel*xconstant
             custom 253, r15, r15, r14
-            movia r14, left
-            # store new left
-            stw r15, 0(r14)
+
+            # 84sp holds left
+            stw r15, 84(sp)
         compute_new_right:
             movia r6, BOX_WIDTH_FLOAT 
             custom 253, r6, r4, r6 
@@ -214,8 +202,8 @@ calculate_constants:
             # do left + (input_pixel + box_width)*constant 
             custom 253, r14, r15, r14 
             # now need to store that result into right
-            movia r15, right
-            stw r14, 0(r15)
+            # 88sp holds right
+            stw r14, 88(sp)
         compute_new_top:
              # do input_pixel * yconstant 
             custom 252, r14, r5, r21      
@@ -224,9 +212,9 @@ calculate_constants:
             ldw r15, 0(r15)
             # do top + input_pixel*yconstant
             custom 253, r15, r15, r14
-            movia r14, top
+
             # store new top
-            stw r15, 0(r14)
+            stw r15, 92(sp)
         compute_new_bottom:
             
             movia r6, BOX_HEIGHT_FLOAT 
@@ -241,6 +229,18 @@ calculate_constants:
             # now need to store that result into right
             movia r15, bot
             stw r14, 0(r15)
+        store_new_constants:
+            ldw r14, 84(sp)
+            movia r15, left
+            stw r14, 0(r15)
+            
+            ldw r14, 88(sp)
+            movia r15, right
+            stw r14, 0(r15)
+            
+            ldw r14, 92(sp)
+            movia r15, top
+            stw r14, 0(r15) 
         done_constants:
             movia r10, 0x01
     br calculate_constants
@@ -331,6 +331,6 @@ calculate_constants:
     ldw r23, 76(sp) 
     ldw ra, 80(sp) 
   
-    addi sp, sp, 88
+    addi sp, sp, 104
  
     ret
