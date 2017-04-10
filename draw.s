@@ -105,7 +105,7 @@ draw_box:
 		mov r6, r10
 		bne r11, r0, draw_right_box
 
-	movia r10, right_box
+	movia r10, left_box
 	movia r11, 118
 	ldw r4, 20(sp)
 	ldw r5, 24(sp)
