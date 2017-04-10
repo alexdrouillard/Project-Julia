@@ -38,8 +38,13 @@ draw_box:
 	movia r6, top_box
 	movia r7, 160
 	draw_top_box:
+		addi sp, sp, -8
+		stw  r4, 0(sp)
+		stw  r5, 4(sp)
 		call draw_and_save_pixel
-		srli r4, r4, 1
+		ldw  r4, 0(sp)
+		stw  r5, 4(sp)
+		addi sp, sp, 8
 		addi r4, r4, 1
 		addi r6, r6, 2
 		addi r7, r7, -1
@@ -49,7 +54,13 @@ draw_box:
 	movia r7, 118
 	addi r5, r5, 1
 	draw_right_box:
+		addi sp, sp, -8
+		stw r4, 0(sp)
+		stw r5, 4(sp)
 		call draw_and_save_pixel
+		ldw r4, 0(sp)
+		ldw r5, 4(sp)
+		addi sp, sp, 8
 		addi r5, r5, 1
 		addi r6, r6, 2
 		addi r7, r7, -1
