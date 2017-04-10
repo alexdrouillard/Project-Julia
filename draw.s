@@ -7,8 +7,8 @@
 .data
     right: .word 0x40000000 #2.0
     left: .word 0xC0000000 #-2.0
-    bot: .word 0x3f800000 #-1.0 GPA sad bois
-    top: .word 0xbf800000 #1.0 
+    bot: .word 0xbfc00000 #-1.5 GPA sad bois
+    top: .word 0x3fc00000 #1.5 
     width: .word 0x43A00000 #320.0 in hex
     height: .word 0x43700000 #240.0 in hex
 

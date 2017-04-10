@@ -5,10 +5,9 @@ main:
 
     movia sp, sp_init
 looper:
-    movia r4, 50
-    movia r5, 50
+    movia r4, 80
+    movia r5, 60
 
     call draw_set
-
 
     br looper
