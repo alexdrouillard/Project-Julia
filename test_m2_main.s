@@ -1,13 +1,26 @@
+.equ sp_init, 0x017FFFF80
+
+
+.global main
+main:
+    movia sp, sp_init
+    loop:    
+        call read_valid
+
+    br loop   
+
+
+
+
 movi r4, 0
 movi r5, 0
+
+movia sp, sp_init
 
 call iterate
 mov r4, r2
 mov r5, r3
 call print_complex
-
-movia r4, 0x40000000
-movia r4, 0x40000000
 
 call iterate
 mov r4, r2
