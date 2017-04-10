@@ -30,6 +30,40 @@ bot_box: .skip 160
 # r4 = x
 # r5 = y
 # r6 = color
+
+.global load_box
+load_box:
+	#r4 = top_left of box x pixel
+        #r5 = top_left of box y pixel
+        addi sp, sp, -40
+        stw r8, 0(sp)
+        stw r9, 4(sp)
+        stw r10, 8(sp)
+        stw r11, 12(sp)
+        stw ra, 16(sp)
+        mov r8, r4
+        mov r9, r5
+        movia r10, top_box
+        movia r11, 160
+        load_top_box:
+		mov r6, r6, r0
+		ldh r6, 0(r10)
+                call draw_pixel
+                addi r8, r8, 1
+                addi r10, r10, 2
+                addi r11, r11, -1
+                mov r4, r8
+                mov r5, r9
+                mov r6, r10
+                bne r11, r0, load_top_box
+        ldw r8, 0(sp)
+        ldw r9, 4(sp)
+        ldw r10, 8(sp)
+        ldw r11, 12(sp)
+        ldw ra, 16(sp)
+        addi sp, sp, 40
+        ret
+
 .global draw_box
 draw_box:
 	#r4 = top_left of box x pixel
@@ -39,14 +73,14 @@ draw_box:
 	stw r9, 4(sp)
 	stw r10, 8(sp)
 	stw r11, 12(sp)
-	stw ra, 16(ap)
+	stw ra, 16(sp)
 	mov r8, r4
 	mov r9, r5
 	movia r10, top_box
+	mov r6, r10
 	movia r11, 160
 	draw_top_box:
 		call draw_and_save_pixel
-		addi sp, sp, 8
 		addi r8, r8, 1
 		addi r10, r10, 2
 		addi r11, r11, -1
@@ -59,6 +93,7 @@ draw_box:
 	ldw r10, 8(sp)
 	ldw r11, 12(sp)
 	ldw ra, 16(sp)
+	addi sp, sp, 40
 	ret
 		
 		
