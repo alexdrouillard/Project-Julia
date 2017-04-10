@@ -8,21 +8,14 @@ top_box: .store 160
 bot_box: .store 160
 
 .equ sp_init, 0x017FFF80
-.equ left, 0x40000000 #-2.0
-.equ right, 0xC0000000 #2.0
-.equ top, 0x3f800000 #1.0 GPA sad bois
-.equ bot, 0xbf800000 #-1.0 
-.equ width, 0x43A00000 #320.0 in hex
-.equ height, 0x43700000 #240.0 in hex
 
 .global main
 main:
 
     movia sp, sp_init
-
+looper:
+    movia r4, 50
+    movia r5, 50
 
     call draw_set
-
-looper:
-	br looper
-
+    br looper

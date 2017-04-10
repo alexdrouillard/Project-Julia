@@ -10,14 +10,16 @@ bot_box: .store 160
 .equ VGA_ADDR, 0x08000000
 .equ X_COORD_MAX, 320
 .equ Y_COORD_MAX, 240
+.equ BOX_WIDTH_FLOAT, 0x43200000
+.equ BOX_HEIGHT_FLOAT, 0x42f00000
 
-
-.equ right, 0x40000000 #2.0
-.equ left, 0xC0000000 #-2.0
-.equ bot, 0x3f800000 #-1.0 GPA sad bois
-.equ top, 0xbf800000 #1.0 
-.equ width, 0x43A00000 #320.0 in hex
-.equ height, 0x43700000 #240.0 in hex
+.data
+    right: .word 0x40000000 #2.0
+    left: .word 0xC0000000 #-2.0
+    bot: .word 0x3f800000 #-1.0 GPA sad bois
+    top: .word 0xbf800000 #1.0 
+    width: .word 0x43A00000 #320.0 in hex
+    height: .word 0x43700000 #240.0 in hex
 
 .equ float_one, 0x3f800000
 .equ float_320, 0x43a00000
@@ -132,7 +134,7 @@ draw_pixel:
 
 .global draw_set
 draw_set: 
-    addi sp, sp, -84
+    addi sp, sp, -88
     stw r4, 0(sp) 
     stw r5, 4(sp) 
     stw r6, 8(sp) 
@@ -156,29 +158,116 @@ draw_set:
     stw ra, 80(sp) 
 
     # screen coordinates start at 0,0
+
+    call int_to_float #convert r4 into a float
+    mov r4, r2
+    stw r4, 84(sp)
+
+    ldw r5, 4(sp)
+    mov r4, r5     
+    call int_to_float
+    mov r5, r2
+    ldw r4, 84(sp)
+
+
+    mov r10, r0    # at this point, r4 and r5 are float values
+
+calculate_constants:
+    movia r14, left
+    ldw r14, 0(r14)
+    movia r15, top
+    ldw r15, 0(r15)
+
     calculate_x_constant:
         movia r16, left
         movia r17, right
+        ldw r16, 0(r16)
+        ldw r17, 0(r17)
  
         #right - left
         custom 254, r2, r17, r16
 
-        movia r5, width
+        movia r6, width
+        ldw r6, 0(r6)
 
-        custom 255, r20, r2, r5 # r20 holds (right - left)/width
+        custom 255, r20, r2, r6 # r20 holds (right - left)/width
 
     calculate_y_constant:
         movia r16, top
         movia r17, bot
+        ldw r16, 0(r16)
+        ldw r17, 0(r17)
 
-        mov r5, r16
-        mov r4, r17
-        
         # bot - top
         custom 254, r2, r17, r16
-        movia r5, height
+        movia r6, height
+        ldw r6, 0(r6)
 
-        custom 255, r21, r2, r5 # r21 holds (bot - top)/height
+        custom 255, r21, r2, r6 # r21 holds (bot - top)/height
+
+    # compute new constants here
+    # first, compute where in cartesian where the given pixel is
+    # to calculate left and right, need to find cartesian of new left and right
+    # find new left
+    bne r10, r0, skip_new_constants
+    compute_new_constants:
+
+        compute_new_left:
+             # do input_pixel * xconstant 
+            custom 252, r14, r4, r20      
+        
+            movia r15, left
+            ldw r15, 0(r15)
+            # do left + input_pixel*xconstant
+            custom 253, r15, r15, r14
+            movia r14, left
+            # store new left
+            stw r15, 0(r14)
+        compute_new_right:
+            movia r6, BOX_WIDTH_FLOAT 
+            custom 253, r6, r4, r6 
+            # r6 now holds the pixel value of the rightmost corner
+            # do (input_pixel + box_width)*constant
+            custom 252, r14, r6, r20
+            movia r15, left
+            ldw r15, 0(r15)
+            # do left + (input_pixel + box_width)*constant 
+            custom 253, r14, r15, r14 
+            # now need to store that result into right
+            movia r15, right
+            stw r14, 0(r15)
+        compute_new_top:
+             # do input_pixel * yconstant 
+            custom 252, r14, r5, r21      
+        
+            movia r15, top
+            ldw r15, 0(r15)
+            # do top + input_pixel*yconstant
+            custom 253, r15, r15, r14
+            movia r14, top
+            # store new top
+            stw r15, 0(r14)
+        compute_new_bottom:
+            
+            movia r6, BOX_HEIGHT_FLOAT 
+            custom 253, r6, r5, r6 
+            # r6 now holds the pixel value of the bottom
+            # do (input_pixel + box_width)*constant
+            custom 252, r14, r6, r21
+            movia r15, top
+            ldw r15, 0(r15)
+            # do left + (input_pixel + box_width)*constant 
+            custom 253, r14, r15, r14 
+            # now need to store that result into right
+            movia r15, bot
+            stw r14, 0(r15)
+        done_constants:
+            movia r10, 0x01
+    br calculate_constants
+    skip_new_constants:    
+
+
+
 
     mov r16, r0 #screen_x
     mov r17, r0 #screen_y
@@ -196,8 +285,8 @@ draw_set:
     # do x * xconstant
     custom 252, r22, r8, r20 
     # do left + x*xconstant
-    movia r4, left
-    custom 253, r22, r4, r22
+
+    custom 253, r22, r14, r22
     mov r9, r0
 
         draw_y:
@@ -213,8 +302,8 @@ draw_set:
         custom 252, r23, r9, r21
 
         # do top + y*yconstant
-        movia r4, top
-        custom 253, r23, r4, r23
+
+        custom 253, r23, r15, r23
 
         #now get the julia set value for x and y
         mov r4, r22
@@ -262,6 +351,6 @@ draw_set:
     ldw r23, 76(sp) 
     ldw ra, 80(sp) 
   
-    addi sp, sp, 84
+    addi sp, sp, 88
  
     ret
