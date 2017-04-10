@@ -30,10 +30,20 @@ bot_box: .skip 160
 # r4 = x
 # r5 = y
 # r6 = color
-
+.global draw_box
 draw_box:
 	#r4 = top_left of box x pixel
 	#r5 = top_left of box y pixel
+	addi sp, sp, -40
+	movia r6, top_box
+	movia r7, 160
+	draw_top_box:
+		call draw_and_save_pixel
+		addi r6, r6, 2
+		addi r7, r7, -1
+		bne r7, r0, draw_top_box
+	ret
+		
 		
 .global draw_and_save_pixel
 draw_and_save_pixel:
