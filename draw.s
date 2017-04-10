@@ -39,6 +39,7 @@ draw_box:
 	stw r9, 4(sp)
 	stw r10, 8(sp)
 	stw r11, 12(sp)
+	stw ra, 16(ap)
 	mov r8, r4
 	mov r9, r5
 	movia r10, top_box
@@ -53,6 +54,11 @@ draw_box:
 		mov r5, r9
 		mov r6, r10
 		bne r11, r0, draw_top_box	
+	ldw r8, 0(sp)
+	ldw r9, 4(sp)
+	ldw r10, 8(sp)
+	ldw r11, 12(sp)
+	ldw ra, 16(sp)
 	ret
 		
 		
