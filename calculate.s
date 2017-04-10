@@ -18,9 +18,7 @@ iterate:
 		bgt r2, r13, iterate_loop_done
 
                 # CALCULATE
-                mov  r6, r4
-                mov  r7, r5
-                call complex_multiply
+                call complex_square
 
                 movia r4, 0xbf4ccccd
                 movia r5, 0x3e1fbe77
