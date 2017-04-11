@@ -50,8 +50,9 @@ load_box:
     mov r6, r10
     movia r11, 160
     load_top_box:
-        mov r6, r0 
-        ldhu r6, 0(r10)
+        #mov r6, r0 
+        #ldhu r6, 0(r10)
+        movia r6, 0x00FF
         call draw_pixel
         addi r8, r8, 1
         addi r10, r10, 2
@@ -67,8 +68,9 @@ load_box:
     movia r10, right_box
     movia r11, 118
     load_right_box:
-        mov r6, r0 
-        ldhu r6, 0(r10)
+        #mov r6, r0 
+        #ldhu r6, 0(r10)
+        movia r6, 0x00FF
         call draw_pixel
         addi r9, r9, 1
         addi r10, r10, 2
@@ -86,8 +88,9 @@ load_box:
     mov r8, r4
     mov r9, r5
     load_left_box:
-        mov r6, r0 
-        ldhu r6, 0(r10)
+        #mov r6, r0 
+        #ldhu r6, 0(r10)
+        movia r6, 0x00FF
         call draw_pixel
         addi r9, r9, 1
         addi r10, r10, 2
@@ -100,8 +103,9 @@ load_box:
     movia r10, bot_box
     movia r11, 160
     load_bot_box:
-        mov r6, r0 
-        ldhu r6, 0(r10)
+        #mov r6, r0 
+        #ldhu r6, 0(r10)
+        movia r6, 0x00FF
         call draw_pixel
         addi r8, r8, 1
         addi r10, r10, 2
@@ -117,10 +121,10 @@ load_box:
     ldw r11, 12(sp)
     ldw ra, 16(sp)
     ldw r4, 20(sp)
-        ldw r5, 24(sp)
-        ldw r6, 28(sp)
-        ldw r7, 32(sp)
-        addi sp, sp, 40
+    ldw r5, 24(sp)
+    ldw r6, 28(sp)
+    ldw r7, 32(sp)
+    addi sp, sp, 40
     ret
 
 .global draw_box
@@ -261,7 +265,6 @@ save_pixel:
 
 draw_pixel: 
     
-    #use r8 for the pixel address 
     mov r7, r0
     movia r7, VGA_ADDR
     slli r5, r5, 10
