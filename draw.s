@@ -77,7 +77,7 @@ load_box:
                 mov r4, r8
                 mov r5, r9
                 mov r6, r10
-                bne r11, r0, draw_right_box
+                bne r11, r0, load_right_box
 
         movia r10, left_box
         movia r11, 118
@@ -86,7 +86,7 @@ load_box:
         addi r5, r5, 1
         mov r8, r4
         mov r9, r5
-        draw_left_box:
+        load_left_box:
                 mov r6, r0
 		ldhu r6, 0(r10)
 		call draw_pixel
@@ -96,11 +96,11 @@ load_box:
                 mov r4, r8
                 mov r5, r9
                 mov r6, r10
-                bne r11, r0, draw_left_box
+                bne r11, r0, load_left_box
 
         movia r10, bot_box
         movia r11, 160
-        draw_bot_box:
+        load_bot_box:
                 mov r6, r0
 		ldhu r6, 0(r10)
 		call draw_pixel
@@ -110,7 +110,7 @@ load_box:
                 mov r4, r8
                 mov r5, r9
                 mov r6, r10
-                bne r11, r0, draw_bot_box
+                bne r11, r0, load_bot_box
 	ldw r8, 0(sp)
         ldw r9, 4(sp)
         ldw r10, 8(sp)

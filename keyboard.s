@@ -26,8 +26,10 @@ keyboard_input:
         addi sp, sp, 16
 	ret
 read_valid:
-	addi sp, sp, -4
+	addi sp, sp, -12
 	stw ra, 0(sp)
+        stw r4, 4(sp)
+        stw r5, 8(sp)
         
         read_next:
 	call keyboard_input
@@ -39,7 +41,9 @@ read_valid:
         mov r2, r3
         
         ldw ra, 0(sp)
-        addi sp, sp, 4
+        ldw r4, 4(sp)
+        ldw r5, 8(sp)
+        addi sp, sp, 12
         ret
 
         ignore_next:
