@@ -6,15 +6,16 @@ main:
     movia sp, sp_init
 
 
-looper:
+
     movia r4, 80
     movia r5, 60
-    movia r6, 1 
+    movia r6, 2
     call draw_set
+    movia r4, 50
+    movia r5, 50
+    call draw_box
 
-    movia r4, 0
-    movia r5, 0
-#    call draw_box    
-
+looper:
 
 br looper
+

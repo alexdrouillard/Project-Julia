@@ -143,8 +143,7 @@ draw_box:
 	ldw r10, 8(sp)
 	ldw r11, 12(sp)
 	ldw ra, 16(sp)
-	
-	addi sp, sp, 40
+        addi sp, sp, 40
 	ret
 		
 		
