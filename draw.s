@@ -147,7 +147,8 @@ draw_box:
     mov r6, r10
     movia r11, 160
     draw_top_box:
-        call draw_and_save_pixel
+        movia r6, 0xFFFF
+        call draw_pixel
         addi r8, r8, 1
         addi r10, r10, 2
         addi r11, r11, -1
@@ -162,7 +163,8 @@ draw_box:
     movia r10, right_box
     movia r11, 118
     draw_right_box:
-        call draw_and_save_pixel
+        movia r6, 0xFFFF
+        call draw_pixel
         addi r9, r9, 1
         addi r10, r10, 2
         addi r11, r11, -1
@@ -179,7 +181,8 @@ draw_box:
     mov r8, r4
     mov r9, r5
     draw_left_box:
-         call draw_and_save_pixel
+        movia r6, 0xFFFF
+        call draw_pixel
         addi r9, r9, 1
         addi r10, r10, 2
         addi r11, r11, -1
@@ -191,7 +194,8 @@ draw_box:
     movia r10, bot_box
     movia r11, 160
     draw_bot_box:
-        call draw_and_save_pixel
+        movia r6, 0xFFFF
+        call draw_pixel
         addi r8, r8, 1
         addi r10, r10, 2
         addi r11, r11, -1
@@ -206,28 +210,96 @@ draw_box:
     ldw r11, 12(sp)
     ldw ra, 16(sp)
     ldw r4, 20(sp)
-        ldw r5, 24(sp)
-        ldw r6, 28(sp)
-        ldw r7, 32(sp)
-        addi sp, sp, 40
+    ldw r5, 24(sp)
+    ldw r6, 28(sp)
+    ldw r7, 32(sp)
+    addi sp, sp, 40
     ret
         
-        
-.global draw_and_save_pixel
-draw_and_save_pixel:
-    #r4 = xpixel
-    #r5 = ypixel
-    #r6 = memory address
-    addi sp, sp, -4
-    stw ra, 0(sp)
-    
-	call save_pixel
-	movia r6, 0xFFFF # draw white into pixel
-	call draw_pixel
-	ldw ra, 0(sp)
+.global save_box
+save_box:
+    #r4 = top_left of box x pixel
+    #r5 = top_left of box y pixel
+    addi sp, sp, -40
+    stw r8, 0(sp)
+    stw r9, 4(sp)
+    stw r10, 8(sp)
+    stw r11, 12(sp)
+    stw ra, 16(sp)
+    stw r4, 20(sp)
+    stw r5, 24(sp)
+    stw r6, 28(sp)
+    stw r7, 32(sp)
+    mov r8, r4
+    mov r9, r5
+    movia r10, top_box
+    mov r6, r10
+    movia r11, 160
+    save_top_box:
+        call save_pixel
+        addi r8, r8, 1
+        addi r10, r10, 2
+        addi r11, r11, -1
+        mov r4, r8
+        mov r5, r9
+        mov r6, r10
+        bne r11, r0, save_top_box    
+    subi r8, r8, 1    
+    addi r9, r9, 1
+    mov r5, r9
+    mov r4, r8    
+    movia r10, right_box
+    movia r11, 118
+    save_right_box:
+        call save_pixel
+        addi r9, r9, 1
+        addi r10, r10, 2
+        addi r11, r11, -1
+        mov r4, r8
+        mov r5, r9
+        mov r6, r10
+        bne r11, r0, save_right_box
 
-	addi sp, sp, 4
-	ret
+    movia r10, left_box
+    movia r11, 118
+    ldw r4, 20(sp)
+    ldw r5, 24(sp)
+    addi r5, r5, 1
+    mov r8, r4
+    mov r9, r5
+    save_left_box:
+        call save_pixel
+        addi r9, r9, 1
+        addi r10, r10, 2
+        addi r11, r11, -1
+        mov r4, r8
+        mov r5, r9
+        mov r6, r10
+        bne r11, r0, save_left_box
+
+    movia r10, bot_box
+    movia r11, 160
+    save_bot_box:
+        call save_pixel
+        addi r8, r8, 1
+        addi r10, r10, 2
+        addi r11, r11, -1
+        mov r4, r8
+        mov r5, r9
+        mov r6, r10
+        bne r11, r0, save_bot_box
+
+    ldw r8, 0(sp)
+    ldw r9, 4(sp)
+    ldw r10, 8(sp)
+    ldw r11, 12(sp)
+    ldw ra, 16(sp)
+    ldw r4, 20(sp)
+    ldw r5, 24(sp)
+    ldw r6, 28(sp)
+    ldw r7, 32(sp)
+    addi sp, sp, 40
+    ret
 
 save_pixel:
 	#r4 = xpixel
