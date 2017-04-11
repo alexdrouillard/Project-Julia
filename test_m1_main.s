@@ -36,7 +36,7 @@ looper:
     br next_case_1
     
     move_down:
-    addi r5, r5, 1
+    addi r5, r5, 3
     br done_case
 
     next_case_1:
@@ -44,7 +44,7 @@ looper:
     beq r2, r8, move_up
     br next_case_2
     move_up:
-    addi r5, r5, -1
+    addi r5, r5, -3
     br done_case
 
     
@@ -53,7 +53,7 @@ looper:
     beq r2, r8, move_left
     br next_case_3
     move_left:
-    addi r4, r4, -1
+    addi r4, r4, -3
     br done_case
 
 
@@ -62,7 +62,7 @@ looper:
     beq r2, r8, move_right
     br next_case_4
     move_right:
-    addi r4, r4, 1
+    addi r4, r4, 3
     br done_case
 
 
