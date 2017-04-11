@@ -22,6 +22,7 @@ bot_box: .skip 160
     width: .word 0x43A00000 #320.0 in hex
     height: .word 0x43700000 #240.0 in hex
 
+.equ two_in_float, 0x40000000
 .equ float_one, 0x3f800000
 .equ float_320, 0x43a00000
 .equ float_240, 0x43700000
@@ -46,8 +47,8 @@ load_box:
         movia r10, top_box
         movia r11, 160
         load_top_box:
-		mov r6, r6, r0
-		ldh r6, 0(r10)
+		mov r6, r0
+		ldhu r6, 0(r10)
                 call draw_pixel
                 addi r8, r8, 1
                 addi r10, r10, 2
@@ -102,7 +103,6 @@ draw_and_save_pixel:
 	#r4 = xpixel
 	#r5 = ypixel
 	#r6 = memory address
-        movia r6, top_box
 	addi sp, sp, -4
 	stw ra, 0(sp)
 	
@@ -133,7 +133,7 @@ save_pixel:
     or r8, r8, r5
     slli r4, r4, 1
     or r8, r8, r4
-    ldhio r5, 0(r8)
+    ldhuio r5, 0(r8)
     sth r5, 0(r6) 
 
     ldw r4, 0(sp) 
@@ -185,6 +185,9 @@ draw_set:
     stw r22, 72(sp) 
     stw r23, 76(sp) 
     stw ra, 80(sp) 
+    # r4 is x coord of zoom box
+    # r5 is y coord of zoom box
+    # r6 tells us whether we zoom in (1) zoom out (2) no zoom (0)
 
     # screen coordinates start at 0,0
 
@@ -200,7 +203,32 @@ draw_set:
 
 
     mov r10, r0    # at this point, r4 and r5 are float values
+    movia r9, 2
+    bne r6, r9, calculate_constants
+   
+    zoom_out:
+        # calculate width
+    calculate_width_delta:
+        movia r14, right
+        ldw r14, 0(r14)
+        movia r15, left
+        ldw r15, 0(r15)
+        custom 254, r14, r14, r15
+        movia r15, two_in_float
+        custom 255, r14, r14, r15
+        #r14 holds w/2 
+    calculate_zoom_out_left:
+        movia r8, left
+        ldw r15, 0(r8)
+        custom 254, r15, r15, r14 #do left - w/2,
+        stw r15, 0(r8)
 
+    calculate_zoom_out_right:
+        movia r8, right
+        ldw r15, 0(r8)
+        custom 253, r15, r15, r14 #do right + w/2
+        stw r15, 0(r8)
+        
 calculate_constants:
     movia r14, left
     ldw r14, 0(r14)
@@ -239,6 +267,10 @@ calculate_constants:
     # to calculate left and right, need to find cartesian of new left and right
     # find new left
     # TODO: fix dis back to bne
+    ldw r6, 8(sp) 
+    beq r6, r0, skip_new_constants
+    movia r8, 2
+    beq r6, r8, skip_new_constants
     bne r10, r0, skip_new_constants
     compute_new_constants:
 
