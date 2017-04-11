@@ -1,4 +1,5 @@
 .equ two_in_float, 0x40000000
+.text
 .global complex_add
 complex_add:
     # addition

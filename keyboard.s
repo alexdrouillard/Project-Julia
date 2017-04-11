@@ -1,5 +1,5 @@
 .equ keyboard_address, 0xFF200100
-
+.text
 .global read_valid
 .global keyboard_input
 
