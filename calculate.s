@@ -3,6 +3,7 @@
 
 .equ maxiter, 256
 .equ threshold, 0x41200000
+.text
 .global iterate
 iterate:
 	addi sp, sp, -32
@@ -20,13 +21,13 @@ iterate:
                 # CALCULATE
                 call complex_square
 
-                movia r4, 0xbf4ccccd
-                movia r5, 0x3e1fbe77
+                #movia r4, 0xbf4ccccd
+                #movia r5, 0x3e1fbe77
 
-                mov r6, r2
-                mov r7, r3
+                #mov r6, r2
+                #mov r7, r3
 
-                call complex_add
+                #call complex_add
 
                 #calculate
 		mov  r4, r2

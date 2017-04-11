@@ -6,6 +6,7 @@
 .equ max_violet, 191
 .equ revolution, 192
 .equ maxiter, 256
+.text
 .global hsv_to_rgb
 
 hsv_to_rgb: #hsb_to_rgb(int iterations)

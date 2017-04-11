@@ -1,20 +1,18 @@
-.data
-.align 2
-box_x: .word 80
-box_y: .word 60
-left_box: .skip 118
-right_box: .skip 118
-top_box: .skip 160
-bot_box: .skip 160
-
 .equ VGA_ADDR, 0x08000000
 .equ X_COORD_MAX, 320
 .equ Y_COORD_MAX, 240
 .equ BOX_WIDTH_FLOAT, 0x43200000
 .equ BOX_HEIGHT_FLOAT, 0x42f00000
 
+
 .data
 .align 2
+    box_x: .word 80
+    box_y: .word 60
+    top_box: .skip 320
+    right_box: .skip 236
+    left_box: .skip 236
+    bot_box: .skip 320
     right: .word 0x40000000 #2.0
     left: .word 0xC0000000 #-2.0
     bot: .word 0xbf800000 #-1.0 GPA sad bois
@@ -27,10 +25,21 @@ bot_box: .skip 160
 .equ float_320, 0x43a00000
 .equ float_240, 0x43700000
 
+
+.text
 .global draw_pixel
-# r4 = x
-# r5 = y
-# r6 = color
+
+draw_pixel: 
+    
+    mov r7, r0
+    movia r7, VGA_ADDR
+    slli r5, r5, 10
+    or r7, r7, r5
+    slli r4, r4, 1
+    or r7, r7, r4
+    sthio r6, 0(r7)
+     
+    ret 
 
 .global load_box
 load_box:
@@ -50,9 +59,8 @@ load_box:
     mov r6, r10
     movia r11, 160
     load_top_box:
-        #mov r6, r0 
-        #ldhu r6, 0(r10)
-        movia r6, 0x00FF
+        mov r6, r0 
+        ldhu r6, 0(r10)
         call draw_pixel
         addi r8, r8, 1
         addi r10, r10, 2
@@ -68,9 +76,8 @@ load_box:
     movia r10, right_box
     movia r11, 118
     load_right_box:
-        #mov r6, r0 
-        #ldhu r6, 0(r10)
-        movia r6, 0x00FF
+        mov r6, r0 
+        ldhu r6, 0(r10)
         call draw_pixel
         addi r9, r9, 1
         addi r10, r10, 2
@@ -88,9 +95,8 @@ load_box:
     mov r8, r4
     mov r9, r5
     load_left_box:
-        #mov r6, r0 
-        #ldhu r6, 0(r10)
-        movia r6, 0x00FF
+        mov r6, r0 
+        ldhu r6, 0(r10)
         call draw_pixel
         addi r9, r9, 1
         addi r10, r10, 2
@@ -103,9 +109,8 @@ load_box:
     movia r10, bot_box
     movia r11, 160
     load_bot_box:
-        #mov r6, r0 
-        #ldhu r6, 0(r10)
-        movia r6, 0x00FF
+        mov r6, r0 
+        ldhu r6, 0(r10)
         call draw_pixel
         addi r8, r8, 1
         addi r10, r10, 2
@@ -213,7 +218,7 @@ draw_box:
     ret
         
         
-.global draw_and_save_pixel
+
 draw_and_save_pixel:
     #r4 = xpixel
     #r5 = ypixel
@@ -259,20 +264,6 @@ save_pixel:
     
     addi sp, sp, 20
  
-    ret 
-	
-
-
-draw_pixel: 
-    
-    mov r7, r0
-    movia r7, VGA_ADDR
-    slli r5, r5, 10
-    or r7, r7, r5
-    slli r4, r4, 1
-    or r7, r7, r4
-    sthio r6, 0(r7)
-     
     ret 
 
 .global draw_set
