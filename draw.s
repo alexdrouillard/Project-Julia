@@ -129,6 +129,8 @@ draw_box:
 	stw ra, 16(sp)
 	stw r4, 20(sp)
 	stw r5, 24(sp)
+	stw r6, 28(sp)
+	stw r7, 32(sp)
 	mov r8, r4
 	mov r9, r5
 	movia r10, top_box
@@ -193,6 +195,10 @@ draw_box:
 	ldw r10, 8(sp)
 	ldw r11, 12(sp)
 	ldw ra, 16(sp)
+	ldw r4, 20(sp)
+        ldw r5, 24(sp)
+        ldw r6, 28(sp)
+        ldw r7, 32(sp)
         addi sp, sp, 40
 	ret
 		
