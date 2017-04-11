@@ -95,7 +95,8 @@ draw_box:
 		bne r11, r0, draw_top_box	
 	subi r8, r8, 1	
 	addi r9, r9, 1
-	mov r5, r9	
+	mov r5, r9
+	mov r4, r8	
 	movia r10, right_box
 	movia r11, 118
 	draw_right_box:
