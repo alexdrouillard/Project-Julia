@@ -278,7 +278,28 @@ draw_set:
         ldw r15, 0(r8)
         custom 253, r15, r15, r14 #do right + w/2
         stw r15, 0(r8)
-        
+
+    calculate_height_delta:
+        movia r14, top
+        ldw r14, 0(r14)
+        movia r15, bot
+        ldw r15, 0(r15)
+        custom 254, r14, r14, r15 # do top-bot 
+        movia r15, two_in_float
+        custom 255, r14, r14, r15    
+    
+    calculate_zoom_out_top:
+        movia r8, top
+        ldw r15, 0(r8)
+        custom 253, r15, r14, r15 #do top + w/2
+        stw r15, 0(r8)
+
+    calculate_zoom_out_bot:
+        movia r8, bot
+        ldw r15, 0(r8)
+        custom 254, r15, r15, r14 #do bot - w/2
+        stw r15, 0(r8)
+
 calculate_constants:
     movia r14, left
     ldw r14, 0(r14)
