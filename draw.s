@@ -93,6 +93,8 @@ draw_box:
 		mov r6, r10
 		bne r11, r0, draw_top_box	
 	
+	addi r9, r9, 1
+	mov r5, r9	
 	movia r10, right_box
 	movia r11, 118
 	draw_right_box:
@@ -111,7 +113,7 @@ draw_box:
 	ldw r5, 24(sp)
 	mov r8, r4
 	addi r9, r9, 1
-	mov r9, r5
+	mov r5, r9
 	draw_left_box:
  		call draw_and_save_pixel
 		addi r9, r9, 1
