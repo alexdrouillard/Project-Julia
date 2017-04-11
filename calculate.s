@@ -1,6 +1,5 @@
 #unisigned int iterate(complex_num r4-r5)
 #complex_num equation(complex_num r4-r5)
-
 .equ maxiter, 256
 .equ threshold, 0x41200000
 .text
@@ -21,8 +20,8 @@ iterate:
                 # CALCULATE
                 call complex_square
 
-                movia r4, 0xbf4ccccd
-                movia r5, 0x3e1fbe77
+                mov r4, r24
+                mov r5, r29
 
                 mov r6, r2
                 mov r7, r3
@@ -53,8 +52,8 @@ equation:
 	mov  r7, r5
 	call complex_multiply
 
-	movia r4, 0xbf4ccccd
-	movia r5, 0x3e1fbe77
+	mov r4, r24
+	mov r5, r29
 
 	mov r6, r2
 	mov r7, r3
@@ -66,3 +65,38 @@ equation:
 	ldw  ra, 0(sp)
 	addi sp, sp, 12
 	ret
+.global init_calculate
+init_calculate:
+    addi sp, sp, -16
+    stw ra, 0(sp)
+    stw r4, 4(sp)
+    stw r5, 8(sp)
+
+    call string_to_float 
+    stw r2, 12(sp)
+    ldw r4, 8(sp)
+    call string_to_float
+    mov r29, r2
+    ldw r24, 12(sp)
+    ldw ra, 0(sp)
+    ldw r4, 4(sp)
+    ldw r5, 8(sp)
+    addi sp, sp, 16
+    ret
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

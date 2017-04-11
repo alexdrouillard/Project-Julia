@@ -8,9 +8,13 @@ main:
 
     
 init:
+    call poll_dat_jtag
+    mov r4, r2
+    mov r5, r3
+    call init_calculate
     movia r4, 0
     movia r5, 0
-    movia r6, 1
+    movia r6, 0
     call draw_set
     call save_box
     call draw_box
